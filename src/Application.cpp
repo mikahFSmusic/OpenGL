@@ -79,20 +79,37 @@ int main(void)
         ImGui_ImplOpenGL3_Init(glsl_version);
         ImGui::StyleColorsDark();
 
-        test::TestClearColor test;
-
+        test::Test* currentTest;
+        test::TestMenu* testMenu = new test::TestMenu(currentTest);
+        currentTest = testMenu;
+        
+        // adds test to test menu
+        testMenu->RegisterTest<test::TestClearColor>("Clear Color");
         while (!glfwWindowShouldClose(window))
         {
+            GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
             /* Render here */
             renderer.Clear();
-
-            test.OnUpdate(0.0f);
-            test.OnRender();
             // Start the ImGui frame
             ImGui_ImplOpenGL3_NewFrame();
             ImGui_ImplGlfw_NewFrame();
             ImGui::NewFrame();
-            test.OnImGuiRender();
+
+            if (currentTest)
+            {
+                currentTest->OnUpdate(0.0f);
+                currentTest->OnRender();
+                ImGui::Begin("Test");
+                // if not test menu, draw button, and if that button is clicked...
+                if (currentTest != testMenu && ImGui::Button("<-"))
+                {
+                    delete currentTest;
+                    currentTest = testMenu;
+                }
+                currentTest->OnImGuiRender();
+                ImGui::End();
+
+            }
 
             // MVP -- model, view, projection 
             // model -- position, rotation and scale of the objects
@@ -106,6 +123,13 @@ int main(void)
 
             /* Poll for and process events */
             glfwPollEvents();
+        }
+
+        // Cleanup Test Menu Variables
+        delete currentTest;
+        if (currentTest != testMenu)
+        {
+            delete testMenu;
         }
     }
 
