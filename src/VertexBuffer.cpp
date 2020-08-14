@@ -10,7 +10,6 @@ VertexBuffer::VertexBuffer(const void* data, unsigned int size)
     GLCall(glBindBuffer(GL_ARRAY_BUFFER, m_RendererID));
 
     // size in bytes, position data, and static draw (single buffer, used many times)
-    // 6 * 2 * sizeof(float), 6 floats times 2 for each triangles times the size of a float for byte conversion
     GLCall(glBufferData(GL_ARRAY_BUFFER, size, data, GL_STATIC_DRAW));
 }
 
