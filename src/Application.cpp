@@ -24,6 +24,7 @@
 #include "imgui/imgui_impl_opengl3.h"
 
 #include "tests/TestClearColor.h"
+#include "tests/TestTexture2D.h"
 
 // main application function
 int main(void)
@@ -82,9 +83,10 @@ int main(void)
         test::Test* currentTest;
         test::TestMenu* testMenu = new test::TestMenu(currentTest);
         currentTest = testMenu;
-        
+       
         // adds test to test menu
         testMenu->RegisterTest<test::TestClearColor>("Clear Color");
+        testMenu->RegisterTest<test::TestTexture2D>("2D Texture");
         while (!glfwWindowShouldClose(window))
         {
             GLCall(glClearColor(0.0f, 0.0f, 0.0f, 1.0f));
@@ -111,11 +113,6 @@ int main(void)
 
             }
 
-            // MVP -- model, view, projection 
-            // model -- position, rotation and scale of the objects
-            // view -- camera matrix
-            // projection -- windowed projection 
-
             ImGui::Render();
             ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
             /* Swap front and back buffers */
@@ -129,6 +126,7 @@ int main(void)
         delete currentTest;
         if (currentTest != testMenu)
         {
+            // Deletes test menu if not current test
             delete testMenu;
         }
     }
